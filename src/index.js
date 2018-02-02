@@ -98,4 +98,16 @@ export default class GeminiAPI {
   // Fund Management API
   getMyAvailableBalances = () =>
     this.requestPrivate(`/balances`)
+
+  withdraw = (symbol, params = {}) => {
+    return new Promise((resolve, reject) => {
+      console.log(symbol);
+      this.requestPrivate(`/withdraw/${symbol}`)
+        .then((res) => {
+          console.log(res);
+          resolve(res);
+        })
+        .catch(reject);
+    });
+  }
 }

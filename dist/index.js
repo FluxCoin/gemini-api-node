@@ -88,6 +88,16 @@ class GeminiAPI {
 
     this.getMyAvailableBalances = () => this.requestPrivate(`/balances`);
 
+    this.withdraw = (symbol, params = {}) => {
+      return new Promise((resolve, reject) => {
+        console.log(symbol);
+        this.requestPrivate(`/withdraw/${symbol}`).then(res => {
+          console.log(res);
+          resolve(res);
+        }).catch(reject);
+      });
+    };
+
     this.key = key;
     this.secret = secret;
     const subdomain = sandbox ? `api.sandbox` : `api`;
