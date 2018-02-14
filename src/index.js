@@ -99,15 +99,6 @@ export default class GeminiAPI {
   getMyAvailableBalances = () =>
     this.requestPrivate(`/balances`)
 
-  withdraw = (symbol, params = {}) => {
-    return new Promise((resolve, reject) => {
-      console.log(symbol);
-      this.requestPrivate(`/withdraw/${symbol}`)
-        .then((res) => {
-          console.log(res);
-          resolve(res);
-        })
-        .catch(reject);
-    });
-  }
+  withdraw = (symbol, params = {}) =>
+    this.requestPrivate(`/withdraw/${symbol}`, params);
 }
