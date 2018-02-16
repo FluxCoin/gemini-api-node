@@ -16,8 +16,7 @@ export default class GeminiAPI {
 
   requestPublic = (endpoint, params = {}) =>
     axios.get(`${this.baseUrl}/v1${endpoint}`, { params })
-      .then(get(`data`))
-      .catch(err => Promise.reject(err.response.data));
+      .then(get(`data`));
 
   requestPrivate = (endpoint, params = {}) => {
     if (!this.key || !this.secret) {
@@ -42,8 +41,7 @@ export default class GeminiAPI {
     });
 
     return axios.post(requestUrl, {}, config)
-      .then(get(`data`))
-      .catch(err => Promise.reject(err.response.data));
+      .then(get(`data`));
   }
 
   // Public API
