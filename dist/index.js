@@ -31,7 +31,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class GeminiAPI {
 
   constructor({ key, secret, sandbox = false } = { sandbox: false }) {
-    this.requestPublic = (endpoint, params = {}) => _axios2.default.get(`${this.baseUrl}/v1${endpoint}`, { params }).then((0, _get2.default)(`data`));
+    this.requestPublic = (endpoint, params = {}) => _axios2.default.get(`${this.baseUrl}/v1${endpoint}`, { params }).then((0, _get2.default)(`data`)).catch(err => {
+      throw (0, _get2.default)(`data`, err);
+    });
 
     this.requestPrivate = (endpoint, params = {}) => {
       if (!this.key || !this.secret) {
@@ -52,7 +54,9 @@ class GeminiAPI {
         secret: this.secret
       });
 
-      return _axios2.default.post(requestUrl, {}, config).then((0, _get2.default)(`data`));
+      return _axios2.default.post(requestUrl, {}, config).then((0, _get2.default)(`data`)).catch(err => {
+        throw (0, _get2.default)(`data`, err);
+      });
     };
 
     this.getAllSymbols = () => this.requestPublic(`/symbols`);
