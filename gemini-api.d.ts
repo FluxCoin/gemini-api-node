@@ -106,6 +106,13 @@ export class GeminiAPI {
    * Returns available balances in the supported currencies
    */
   getMyAvailableBalances(): Promise<AccountBalancesEntry[]>
+
+  /**
+   * Withdraw cryptocurrency funds to a whitelisted address
+   * @param symbol
+   * @param params
+   */
+  withdraw(symbol: string, params: Params.Withdraw): Promise<Withdrawal>
 }
 
 export type OrderSide = 'buy'|'sell'
@@ -152,6 +159,11 @@ export namespace Params {
     symbol: string
     limit_trades?: number
     timestamp?: number
+  }
+
+  interface Withdraw {
+    address: string;
+    amount: string;
   }
 }
 
@@ -296,6 +308,12 @@ export interface OrderBookEntry {
 export interface OrderBook {
   bids: Array<OrderBookEntry>
   asks: Array<OrderBookEntry>
+}
+
+export interface Withdrawal {
+  destination: string;
+  amount: string;
+  txHash: string;
 }
 
 export interface RestClientOptions {
