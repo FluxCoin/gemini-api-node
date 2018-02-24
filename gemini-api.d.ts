@@ -121,7 +121,7 @@ export type OrderExecutionOption = 'maker-or-cancel'|'immediate-or-cancel'|'auct
 
 export namespace Params {
   interface CancelOrder {
-    client_order_id: string
+    order_id: string
   }
 
   interface OrderStatus {
