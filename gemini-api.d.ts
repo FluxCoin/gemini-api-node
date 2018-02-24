@@ -293,7 +293,7 @@ export interface OrderStatus {
   timestamp: string
   timestampms: number
   is_live: boolean
-  is_cancelled: false
+  is_cancelled: boolean
   options: OrderExecutionOption[],
   executed_amount: string
   remaining_amount: string
