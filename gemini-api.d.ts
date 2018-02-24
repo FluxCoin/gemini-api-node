@@ -125,7 +125,7 @@ export namespace Params {
   }
 
   interface OrderStatus {
-    client_order_id: string
+    order_id: string
   }
 
   interface NewOrder {
