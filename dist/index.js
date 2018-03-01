@@ -1,115 +1,59 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _websocketClient = require('./websocketClient');
-
-var _websocketClient2 = _interopRequireDefault(_websocketClient);
-
-var _axios = require('axios');
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _createRequestConfig = require('./createRequestConfig');
-
-var _createRequestConfig2 = _interopRequireDefault(_createRequestConfig);
-
-var _get = require('lodash/fp/get');
-
-var _get2 = _interopRequireDefault(_get);
-
-var _shortid = require('shortid');
-
-var _shortid2 = _interopRequireDefault(_shortid);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const axios_1 = require("axios");
+const ramda_1 = require("ramda");
+const shortid = require("shortid");
+const createRequestConfig_1 = require("./createRequestConfig");
+var websocketClient_1 = require("./websocketClient");
+exports.WebsocketClient = websocketClient_1.default;
 class GeminiAPI {
-
-  constructor({ key, secret, sandbox = false } = { sandbox: false }) {
-    this.requestPublic = (endpoint, params = {}) => _axios2.default.get(`${this.baseUrl}/v1${endpoint}`, { params }).then((0, _get2.default)(`data`)).catch(err => {
-      throw (0, _get2.default)(`data`, err);
-    });
-
-    this.requestPrivate = (endpoint, params = {}) => {
-      if (!this.key || !this.secret) {
-        throw new Error(`API key and secret key required to use authenticated methods`);
-      }
-
-      const requestPath = `/v1${endpoint}`;
-      const requestUrl = `${this.baseUrl}${requestPath}`;
-
-      const payload = _extends({
-        nonce: Date.now(),
-        request: requestPath
-      }, params);
-
-      const config = (0, _createRequestConfig2.default)({
-        payload,
-        key: this.key,
-        secret: this.secret
-      });
-
-      return _axios2.default.post(requestUrl, {}, config).then((0, _get2.default)(`data`)).catch(err => {
-        throw (0, _get2.default)(`data`, err);
-      });
-    };
-
-    this.getAllSymbols = () => this.requestPublic(`/symbols`);
-
-    this.getTicker = symbol => this.requestPublic(`/pubticker/${symbol}`);
-
-    this.getOrderBook = (symbol, params = {}) => this.requestPublic(`/book/${symbol}`, params);
-
-    this.getTradeHistory = (symbol, params = {}) => this.requestPublic(`/trades/${symbol}`, params);
-
-    this.getCurrentAuction = symbol => this.requestPublic(`/auction/${symbol}`);
-
-    this.getAuctionHistory = (symbol, params = {}) => this.requestPublic(`/auction/${symbol}/history`, params);
-
-    this.newOrder = (params = {}) => this.requestPrivate(`/order/new`, _extends({
-      client_order_id: (0, _shortid2.default)(),
-      type: `exchange limit`
-    }, params));
-
-    this.cancelOrder = ({ order_id } = {}) => this.requestPrivate(`/order/cancel`, { order_id });
-
-    this.cancelAllSessionOrders = () => this.requestPrivate(`/order/cancel/session`);
-
-    this.cancelAllActiveOrders = () => this.requestPrivate(`/order/cancel/all`);
-
-    this.getMyOrderStatus = ({ order_id } = {}) => this.requestPrivate(`/order/status`, { order_id });
-
-    this.getMyActiveOrders = () => this.requestPrivate(`/orders`);
-
-    this.getMyPastTrades = (params = {}) => this.requestPrivate(`/mytrades`, params);
-
-    this.getMyTradeVolume = () => this.requestPrivate(`/tradevolume`);
-
-    this.getMyAvailableBalances = () => this.requestPrivate(`/balances`);
-
-    this.withdraw = (symbol, params = {}) => this.requestPrivate(`/withdraw/${symbol}`, params);
-
-    this.key = key;
-    this.secret = secret;
-    const subdomain = sandbox ? `api.sandbox` : `api`;
-    this.baseUrl = `https://${subdomain}.gemini.com`;
-  }
-
-  // Public API
-
-
-  // Order Placement API
-
-
-  // Order Status API
-
-
-  // Fund Management API
+    constructor({ key, secret, sandbox = false }) {
+        this.requestPublic = (endpoint, params = {}) => axios_1.default
+            .get(`${this.baseUrl}/v1${endpoint}`, { params })
+            .then(ramda_1.prop(`data`))
+            .catch(err => {
+            throw ramda_1.path(["response", "data"], err);
+        });
+        this.requestPrivate = (endpoint, params = {}) => {
+            if (!this.key || !this.secret) {
+                throw new Error(`API key and secret key required to use authenticated methods`);
+            }
+            const requestPath = `/v1${endpoint}`;
+            const requestUrl = `${this.baseUrl}${requestPath}`;
+            const payload = Object.assign({ nonce: Date.now(), request: requestPath }, params);
+            const config = createRequestConfig_1.default({
+                payload,
+                key: this.key,
+                secret: this.secret,
+            });
+            return axios_1.default
+                .post(requestUrl, {}, config)
+                .then(ramda_1.prop(`data`))
+                .catch(err => {
+                throw ramda_1.path(["response", `data`], err);
+            });
+        };
+        this.getAllSymbols = () => this.requestPublic(`/symbols`);
+        this.getTicker = (symbol) => this.requestPublic(`/pubticker/${symbol}`);
+        this.getOrderBook = (symbol, params) => this.requestPublic(`/book/${symbol}`, params);
+        this.getTradeHistory = (symbol, params) => this.requestPublic(`/trades/${symbol}`, params);
+        this.getCurrentAuction = (symbol) => this.requestPublic(`/auction/${symbol}`);
+        this.getAuctionHistory = (symbol, params) => this.requestPublic(`/auction/${symbol}/history`, params);
+        this.newOrder = (params) => this.requestPrivate(`/order/new`, Object.assign({ client_order_id: shortid(), type: `exchange limit` }, params));
+        this.cancelOrder = (params) => this.requestPrivate(`/order/cancel`, params);
+        this.cancelAllSessionOrders = () => this.requestPrivate(`/order/cancel/session`);
+        this.cancelAllActiveOrders = () => this.requestPrivate(`/order/cancel/all`);
+        this.getMyOrderStatus = (params) => this.requestPrivate(`/order/status`, params);
+        this.getMyActiveOrders = () => this.requestPrivate(`/orders`);
+        this.getMyPastTrades = (params) => this.requestPrivate(`/mytrades`, params);
+        this.getMyTradeVolume = () => this.requestPrivate(`/tradevolume`);
+        this.getMyAvailableBalances = () => this.requestPrivate(`/balances`);
+        this.withdraw = (symbol, params) => this.requestPrivate(`/withdraw/${symbol}`, params);
+        this.key = key;
+        this.secret = secret;
+        const subdomain = sandbox ? `api.sandbox` : `api`;
+        this.baseUrl = `https://${subdomain}.gemini.com`;
+    }
 }
 exports.default = GeminiAPI;
-GeminiAPI.WebsocketClient = _websocketClient2.default;
+//# sourceMappingURL=index.js.map
