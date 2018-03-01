@@ -11,6 +11,7 @@ export interface MarketHandlerMap {
 }
 export declare type MarketDataEvent = MarketDataChangeEvent | MarketDataTradeEvent;
 export interface MarketDataChangeEvent {
+    symbol: Market;
     type: "change";
     side: "ask" | "bid";
     price: string;
@@ -19,6 +20,7 @@ export interface MarketDataChangeEvent {
     reason: "place" | "trade" | "cancel" | "initial";
 }
 export interface MarketDataTradeEvent {
+    symbol: Market;
     type: "trade";
     tid: number;
     price: string;
