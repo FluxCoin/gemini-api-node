@@ -7,11 +7,10 @@ export interface MessageEvent {
 }
 export interface MarketHandlerMap {
     onOpen?: (symbol: Market) => void;
-    onMessage?: (data: MarketDataEvent) => void;
+    onMessage?: (data: Update) => void;
 }
-export declare type MarketDataEvent = MarketDataChangeEvent | MarketDataTradeEvent;
-export interface MarketDataChangeEvent {
-    symbol: Market;
+export declare type Event = ChangeEvent | TradeEvent;
+export interface ChangeEvent {
     type: "change";
     side: "ask" | "bid";
     price: string;
@@ -19,20 +18,19 @@ export interface MarketDataChangeEvent {
     delta: string;
     reason: "place" | "trade" | "cancel" | "initial";
 }
-export interface MarketDataTradeEvent {
-    symbol: Market;
+export interface TradeEvent {
     type: "trade";
     tid: number;
     price: string;
     amount: string;
     makerSide: "ask" | "bid" | "auction";
 }
-export interface MarketDataUpdate {
+export interface Update {
     type: "update";
     symbol: Market;
     eventId: number;
     timestamp: number;
     timestampms: number;
     socket_sequence: number;
-    events: MarketDataEvent[];
+    events: ChangeEvent[] | [TradeEvent, ChangeEvent] | [ChangeEvent];
 }
