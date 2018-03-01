@@ -25,7 +25,8 @@ export interface TradeEvent {
     amount: string;
     makerSide: "ask" | "bid" | "auction";
 }
-export interface Update {
+export declare type Update = InitialUpdate | TradeUpdate | ChangeUpdate;
+export interface BaseUpdate {
     type: "update";
     symbol: Market;
     eventId: number;
@@ -34,3 +35,15 @@ export interface Update {
     socket_sequence: number;
     events: ChangeEvent[] | [TradeEvent, ChangeEvent] | [ChangeEvent];
 }
+export interface InitialUpdate extends BaseUpdate {
+    events: ChangeEvent[];
+}
+export interface TradeUpdate extends BaseUpdate {
+    events: [TradeEvent, ChangeEvent];
+}
+export interface ChangeUpdate extends BaseUpdate {
+    events: [ChangeEvent];
+}
+export declare function isTradeUpdate(msg: Update): msg is TradeUpdate;
+export declare function isChangeUpdate(msg: Update): msg is ChangeUpdate;
+export declare function isInitialUpdate(msg: Update): msg is InitialUpdate;
