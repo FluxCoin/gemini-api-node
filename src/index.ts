@@ -1,5 +1,5 @@
 import axios from "axios";
-import Nonce from "nonce-ts";
+import Noncense from "noncense";
 import { path, prop } from "ramda";
 import * as shortid from "shortid";
 import createRequestConfig from "./createRequestConfig";
@@ -18,6 +18,8 @@ import {
   Withdrawal,
 } from "./types/Responses";
 export { default as WebsocketClient } from "./websocketClient";
+
+const nonce = Noncense();
 
 export default class GeminiAPI {
   private key: string;
@@ -49,7 +51,6 @@ export default class GeminiAPI {
     const requestPath = `/v1${endpoint}`;
     const requestUrl = `${this.baseUrl}${requestPath}`;
 
-    const nonce = Nonce(15);
     const payload = {
       nonce: nonce(),
       request: requestPath,

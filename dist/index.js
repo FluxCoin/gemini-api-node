@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
-const nonce_ts_1 = require("nonce-ts");
+const noncense_1 = require("noncense");
 const ramda_1 = require("ramda");
 const shortid = require("shortid");
 const createRequestConfig_1 = require("./createRequestConfig");
 var websocketClient_1 = require("./websocketClient");
 exports.WebsocketClient = websocketClient_1.default;
+const nonce = noncense_1.default();
 class GeminiAPI {
     constructor({ key, secret, sandbox = false }) {
         this.requestPublic = (endpoint, params = {}) => axios_1.default
@@ -21,7 +22,6 @@ class GeminiAPI {
             }
             const requestPath = `/v1${endpoint}`;
             const requestUrl = `${this.baseUrl}${requestPath}`;
-            const nonce = nonce_ts_1.default(15);
             const payload = Object.assign({ nonce: nonce(), request: requestPath }, params);
             const config = createRequestConfig_1.default({
                 payload,
