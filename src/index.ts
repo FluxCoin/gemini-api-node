@@ -1,4 +1,5 @@
 import axios from "axios";
+import Nonce from "nonce-ts";
 import { path, prop } from "ramda";
 import * as shortid from "shortid";
 import createRequestConfig from "./createRequestConfig";
@@ -48,8 +49,9 @@ export default class GeminiAPI {
     const requestPath = `/v1${endpoint}`;
     const requestUrl = `${this.baseUrl}${requestPath}`;
 
+    const nonce = Nonce(15);
     const payload = {
-      nonce: Date.now(),
+      nonce: nonce(),
       request: requestPath,
       ...params,
     };
