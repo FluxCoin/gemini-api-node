@@ -30,6 +30,7 @@
     "@types/shortid": "0.0.29",
     "@types/ws": "^4.0.1",
     "axios": "^0.16.0",
+    "nonce-ts": "github:FluxCoin/nonce-fast",
     "qs": "^6.4.0",
     "ramda": "^0.25.0",
     "shortid": "^2.2.8",
