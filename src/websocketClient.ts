@@ -40,7 +40,7 @@ export default class WebsocketClient {
 
   public marketData = (symbols: Market | Market[], handlers: MarketHandlerMap) => {
     const symbolList = Array.isArray(symbols) ? symbols : [symbols];
-    symbolList.forEach(symbol => {
+    return symbolList.map(symbol => {
       const socket = new WebSocket(`${this.baseUrl}/v1/marketdata/${symbol}`);
       socket.addEventListener(`open`, () => {
         if (handlers.onOpen) { handlers.onOpen(symbol); }
@@ -55,6 +55,7 @@ export default class WebsocketClient {
           });
         }
       });
+      return { symbol, socket };
     });
   }
 }

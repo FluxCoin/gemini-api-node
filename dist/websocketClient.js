@@ -5,7 +5,7 @@ class WebsocketClient {
     constructor({ key, secret, sandbox = false }) {
         this.marketData = (symbols, handlers) => {
             const symbolList = Array.isArray(symbols) ? symbols : [symbols];
-            symbolList.forEach(symbol => {
+            return symbolList.map(symbol => {
                 const socket = new WebSocket(`${this.baseUrl}/v1/marketdata/${symbol}`);
                 socket.addEventListener(`open`, () => {
                     if (handlers.onOpen) {
@@ -18,6 +18,7 @@ class WebsocketClient {
                         handlers.onMessage(Object.assign({ symbol }, data));
                     }
                 });
+                return { symbol, socket };
             });
         };
         this.key = key;
