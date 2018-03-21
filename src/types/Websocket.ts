@@ -1,3 +1,5 @@
+import * as WS from 'ws';
+
 import { Market } from ".";
 export interface MessageEvent {
   target: WebSocket;
@@ -5,10 +7,31 @@ export interface MessageEvent {
   binary: boolean;
   data: any;
 }
+
+export type OnOpenHandler = (symbol: Market) => void;
+export type OnMessageHandler = (data: Update) => void;
+
 export interface MarketHandlerMap {
-  onOpen?: (symbol: Market) => void;
-  onMessage?: (data: Update) => void;
+  onOpen?: OnOpenHandler[];
+  onMessage?: OnMessageHandler[];
 }
+
+export interface MarketSocketParams {
+  symbol: Market;
+  socket: WS;
+  handlers: MarketHandlerMap;
+}
+
+export interface MarketSocketObj {
+  closeSocket: () => void;
+  reconnectSocket: () => MarketSocketObj;
+  onOpen: (handler: (symbol: Market) => void) => void;
+  onMessage: (handler: (data: Update) => void) => void;
+  removeOpenListener: (listener: (...args: any[]) => void) => void;
+  removeMessageListener: (listener: (...args: any[]) => void) => void;
+  symbol: Market;
+}
+
 export declare type Event = ChangeEvent | TradeEvent;
 export interface ChangeEvent {
   type: "change";
