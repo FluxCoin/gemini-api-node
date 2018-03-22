@@ -1,8 +1,6 @@
-/// <reference types="ws" />
-import * as WebSocket from "ws";
 import { Market } from "./types";
 import * as Params from "./types/Params";
-import { MarketHandlerMap } from "./types/Websocket";
+import { MarketHandlerMap, MarketSocketObj } from "./types/Websocket";
 export default class WebsocketClient {
     key: string;
     secret: string;
@@ -12,8 +10,6 @@ export default class WebsocketClient {
     orderSocket: any;
     marketSocket: any;
     constructor({key, secret, sandbox}: Params.Constructor);
-    marketData: (symbols: "btcusd" | "ethusd" | "ethbtc" | Market[], handlers: MarketHandlerMap) => {
-        symbol: Market;
-        socket: WebSocket;
-    }[];
+    marketData: (symbols: "btcusd" | "ethusd" | "ethbtc" | Market[], handlers: MarketHandlerMap) => MarketSocketObj[];
+    private marketSocketObj({symbol, socket, handlers});
 }
