@@ -10,10 +10,12 @@ export interface MessageEvent {
 
 export type OnOpenHandler = (symbol: Market) => void;
 export type OnMessageHandler = (data: Update) => void;
+export type OnCloseHandler = OnOpenHandler;
 
 export interface MarketHandlerMap {
   onOpen?: OnOpenHandler[];
   onMessage?: OnMessageHandler[];
+  onClose?: OnCloseHandler[];
 }
 
 export interface MarketSocketParams {
@@ -26,8 +28,10 @@ export interface MarketSocketObj {
   closeSocket: () => void;
   reconnectSocket: () => MarketSocketObj;
   onOpen: (handler: (symbol: Market) => void) => void;
+  onClose: (handler: (symbol: Market) => void) => void;
   onMessage: (handler: (data: Update) => void) => void;
   removeOpenListener: (listener: (...args: any[]) => void) => void;
+  removeCloseListener: (listener: (...args: any[]) => void) => void;
   removeMessageListener: (listener: (...args: any[]) => void) => void;
   symbol: Market;
 }
