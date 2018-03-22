@@ -15,6 +15,13 @@ class WebsocketClient {
                         });
                     });
                 }
+                if (handlers.onClose) {
+                    handlers.onClose.forEach(handler => {
+                        socket.addEventListener(`close`, () => {
+                            handler(symbol);
+                        });
+                    });
+                }
                 if (handlers.onMessage) {
                     handlers.onMessage.forEach(handler => {
                         socket.addEventListener("message", (msg) => {
@@ -46,6 +53,13 @@ class WebsocketClient {
                 handler(symbol);
             });
         };
+        const onClose = (handler) => {
+            handlers.onClose = handlers.onClose || [];
+            handlers.onClose.push(handler);
+            return socket.addEventListener("close", () => {
+                handler(symbol);
+            });
+        };
         const onMessage = (handler) => {
             handlers.onMessage = handlers.onMessage || [];
             handlers.onMessage.push(handler);
@@ -62,14 +76,20 @@ class WebsocketClient {
             handlers.onOpen = ramda_1.without([listener], handlers.onOpen || []);
             return socket.removeEventListener("open", listener);
         };
+        const removeCloseListener = (listener) => {
+            handlers.onClose = ramda_1.without([listener], handlers.onClose || []);
+            return socket.removeEventListener("close", listener);
+        };
         return {
             symbol,
             closeSocket,
             reconnectSocket,
             onOpen,
+            onClose,
             onMessage,
             removeOpenListener,
             removeMessageListener,
+            removeCloseListener,
         };
     }
 }
