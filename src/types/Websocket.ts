@@ -1,4 +1,4 @@
-import * as WS from 'ws';
+import * as WS from "ws";
 
 import { Market } from ".";
 export interface MessageEvent {
@@ -78,7 +78,11 @@ export interface ChangeUpdate extends BaseUpdate {
 }
 
 export function isTradeUpdate(msg: Update): msg is TradeUpdate {
-  return msg.events[0].type === "trade";
+  return (
+    msg.events.length === 2 &&
+    msg.events[0].type === "trade" &&
+    msg.events[1].type === "change"
+  );
 }
 
 export function isChangeUpdate(msg: Update): msg is ChangeUpdate {

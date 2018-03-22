@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function isTradeUpdate(msg) {
-    return msg.events[0].type === "trade";
+    return (msg.events.length === 2 &&
+        msg.events[0].type === "trade" &&
+        msg.events[1].type === "change");
 }
 exports.isTradeUpdate = isTradeUpdate;
 function isChangeUpdate(msg) {

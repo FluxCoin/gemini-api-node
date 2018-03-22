@@ -1,5 +1,5 @@
 /// <reference types="ws" />
-import * as WS from 'ws';
+import * as WS from "ws";
 import { Market } from ".";
 export interface MessageEvent {
     target: WebSocket;
