@@ -8,6 +8,7 @@ import {
   OnMessageHandler,
   MarketSocketParams,
   MarketSocketObj,
+  OnCloseHandler,
 } from "./types/Websocket";
 import { without } from "ramda";
 
@@ -61,6 +62,14 @@ export default class WebsocketClient {
         })
       }
 
+      if (handlers.onClose) {
+        handlers.onClose.forEach(handler => {
+          socket.addEventListener(`close`, () => {
+            handler(symbol);
+          });
+        })
+      }
+
       if (handlers.onMessage) {
         handlers.onMessage.forEach(handler => {
           socket.addEventListener("message", (msg: any) => {
@@ -95,6 +104,14 @@ export default class WebsocketClient {
       });
     }
 
+    const onClose = (handler: OnCloseHandler) => {
+      handlers.onClose = handlers.onClose || [];
+      handlers.onClose.push(handler);
+      return socket.addEventListener("close", () => {
+        handler(symbol);
+      });
+    }
+
     const onMessage = (handler: OnMessageHandler) => {
       handlers.onMessage = handlers.onMessage || [];
       handlers.onMessage.push(handler);
@@ -111,9 +128,15 @@ export default class WebsocketClient {
       handlers.onMessage = without([listener], handlers.onMessage || []);
       return socket.removeEventListener("message", listener);
     }
+
     const removeOpenListener = (listener: (...args: any[]) => void) => {
       handlers.onOpen = without([listener], handlers.onOpen || []);
       return socket.removeEventListener("open", listener);
+    }
+    
+    const removeCloseListener = (listener: (...args: any[]) => void) => {
+      handlers.onClose = without([listener], handlers.onClose || []);
+      return socket.removeEventListener("close", listener);
     }
 
     return {
@@ -121,9 +144,11 @@ export default class WebsocketClient {
       closeSocket,
       reconnectSocket,
       onOpen,
+      onClose,
       onMessage,
       removeOpenListener,
       removeMessageListener,
+      removeCloseListener,
     };
   }
 }
