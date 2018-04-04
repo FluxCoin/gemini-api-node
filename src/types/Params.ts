@@ -21,7 +21,7 @@ export interface NewOrder {
   price: string;
   side: OrderSide;
   type: OrderType;
-  options?: OrderExecutionOption;
+  options?: [OrderExecutionOption];
 }
 
 export interface AuctionHistory {
