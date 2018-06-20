@@ -11,11 +11,13 @@ export interface MessageEvent {
 export type OnOpenHandler = (symbol: Market) => void;
 export type OnMessageHandler = (data: Update) => void;
 export type OnCloseHandler = OnOpenHandler;
+export type OnErrorHandler = (data: any) => void;
 
 export interface MarketHandlerMap {
   onOpen?: OnOpenHandler[];
   onMessage?: OnMessageHandler[];
   onClose?: OnCloseHandler[];
+  onError?: OnErrorHandler[];
 }
 
 export interface MarketSocketParams {

@@ -47,6 +47,7 @@ export default class WebsocketClient {
   //   }
   // }
 
+
   public marketData = (
     symbols: Market | Market[],
     handlers: MarketHandlerMap,
@@ -66,6 +67,14 @@ export default class WebsocketClient {
         handlers.onClose.forEach(handler => {
           socket.addEventListener(`close`, () => {
             handler(symbol);
+          });
+        })
+      }
+
+      if (handlers.onError) {
+        handlers.onError.forEach(handler => {
+          socket.addEventListener("error", (ev: any) => {
+            handler(ev);
           });
         })
       }
@@ -133,7 +142,7 @@ export default class WebsocketClient {
       handlers.onOpen = without([listener], handlers.onOpen || []);
       return socket.removeEventListener("open", listener);
     }
-    
+
     const removeCloseListener = (listener: (...args: any[]) => void) => {
       handlers.onClose = without([listener], handlers.onClose || []);
       return socket.removeEventListener("close", listener);

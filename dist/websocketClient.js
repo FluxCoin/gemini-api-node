@@ -22,6 +22,13 @@ class WebsocketClient {
                         });
                     });
                 }
+                if (handlers.onError) {
+                    handlers.onError.forEach(handler => {
+                        socket.addEventListener("error", (ev) => {
+                            handler(ev);
+                        });
+                    });
+                }
                 if (handlers.onMessage) {
                     handlers.onMessage.forEach(handler => {
                         socket.addEventListener("message", (msg) => {
