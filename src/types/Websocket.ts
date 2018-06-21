@@ -15,9 +15,9 @@ export type OnErrorHandler = (data: any) => void;
 
 export interface MarketHandlerMap {
   onOpen?: OnOpenHandler[];
-  onMessage?: OnMessageHandler[];
   onClose?: OnCloseHandler[];
   onError?: OnErrorHandler[];
+  onMessage?: OnMessageHandler[];
 }
 
 export interface MarketSocketParams {
@@ -31,10 +31,13 @@ export interface MarketSocketObj {
   reconnectSocket: () => MarketSocketObj;
   onOpen: (handler: (symbol: Market) => void) => void;
   onClose: (handler: (symbol: Market) => void) => void;
+  onError: (handler: (ev: any) => void) => void;
   onMessage: (handler: (data: Update) => void) => void;
   removeOpenListener: (listener: (...args: any[]) => void) => void;
   removeCloseListener: (listener: (...args: any[]) => void) => void;
+  removeErrorListener: (listener: (...args: any[]) => void) => void;
   removeMessageListener: (listener: (...args: any[]) => void) => void;
+  removeAllMessageListeners: () => void;
   symbol: Market;
 }
 

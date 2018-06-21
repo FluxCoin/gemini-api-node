@@ -9,7 +9,7 @@ export default class WebsocketClient {
     orderUrl: string;
     orderSocket: any;
     marketSocket: any;
-    constructor({key, secret, sandbox}: Params.Constructor);
+    constructor({ key, secret, sandbox }: Params.Constructor);
     marketData: (symbols: "btcusd" | "ethusd" | "ethbtc" | Market[], handlers: MarketHandlerMap) => MarketSocketObj[];
-    private marketSocketObj({symbol, socket, handlers});
+    private marketSocketObj;
 }

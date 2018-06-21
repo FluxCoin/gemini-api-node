@@ -5,6 +5,7 @@ import {
   MarketHandlerMap,
   MessageEvent,
   OnOpenHandler,
+  OnErrorHandler,
   OnMessageHandler,
   MarketSocketParams,
   MarketSocketObj,
@@ -121,6 +122,14 @@ export default class WebsocketClient {
       });
     }
 
+    const onError = (handler: OnErrorHandler) => {
+      handlers.onError = handlers.onError || [];
+      handlers.onError.push(handler);
+      return socket.addEventListener("error", (ev: any) => {
+        handler(ev);
+      });
+    }
+
     const onMessage = (handler: OnMessageHandler) => {
       handlers.onMessage = handlers.onMessage || [];
       handlers.onMessage.push(handler);
@@ -133,11 +142,6 @@ export default class WebsocketClient {
       });
     }
 
-    const removeMessageListener = (listener: (...args: any[]) => void) => {
-      handlers.onMessage = without([listener], handlers.onMessage || []);
-      return socket.removeEventListener("message", listener);
-    }
-
     const removeOpenListener = (listener: (...args: any[]) => void) => {
       handlers.onOpen = without([listener], handlers.onOpen || []);
       return socket.removeEventListener("open", listener);
@@ -148,16 +152,33 @@ export default class WebsocketClient {
       return socket.removeEventListener("close", listener);
     }
 
+    const removeErrorListener = (listener: (...args: any[]) => void) => {
+      handlers.onError = without([listener], handlers.onError || []);
+      return socket.removeEventListener("error", listener);
+    }
+
+    const removeMessageListener = (listener: (...args: any[]) => void) => {
+      handlers.onMessage = without([listener], handlers.onMessage || []);
+      return socket.removeEventListener("message", listener);
+    }
+
+    const removeAllMessageListeners = () => {
+      return socket.removeAllListeners("message");
+    }
+
     return {
       symbol,
       closeSocket,
       reconnectSocket,
       onOpen,
       onClose,
+      onError,
       onMessage,
       removeOpenListener,
       removeMessageListener,
+      removeAllMessageListeners,
       removeCloseListener,
+      removeErrorListener,
     };
   }
 }

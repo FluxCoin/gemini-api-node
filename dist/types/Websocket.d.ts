@@ -1,4 +1,3 @@
-/// <reference types="ws" />
 import * as WS from "ws";
 import { Market } from ".";
 export interface MessageEvent {
@@ -10,10 +9,12 @@ export interface MessageEvent {
 export declare type OnOpenHandler = (symbol: Market) => void;
 export declare type OnMessageHandler = (data: Update) => void;
 export declare type OnCloseHandler = OnOpenHandler;
+export declare type OnErrorHandler = (data: any) => void;
 export interface MarketHandlerMap {
     onOpen?: OnOpenHandler[];
-    onMessage?: OnMessageHandler[];
     onClose?: OnCloseHandler[];
+    onError?: OnErrorHandler[];
+    onMessage?: OnMessageHandler[];
 }
 export interface MarketSocketParams {
     symbol: Market;
@@ -25,10 +26,13 @@ export interface MarketSocketObj {
     reconnectSocket: () => MarketSocketObj;
     onOpen: (handler: (symbol: Market) => void) => void;
     onClose: (handler: (symbol: Market) => void) => void;
+    onError: (handler: (ev: any) => void) => void;
     onMessage: (handler: (data: Update) => void) => void;
     removeOpenListener: (listener: (...args: any[]) => void) => void;
     removeCloseListener: (listener: (...args: any[]) => void) => void;
+    removeErrorListener: (listener: (...args: any[]) => void) => void;
     removeMessageListener: (listener: (...args: any[]) => void) => void;
+    removeAllMessageListeners: () => void;
     symbol: Market;
 }
 export declare type Event = ChangeEvent | TradeEvent;
