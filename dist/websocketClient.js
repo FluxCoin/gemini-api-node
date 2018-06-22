@@ -22,6 +22,13 @@ class WebsocketClient {
                         });
                     });
                 }
+                if (handlers.onError) {
+                    handlers.onError.forEach(handler => {
+                        socket.addEventListener("error", (ev) => {
+                            handler(ev);
+                        });
+                    });
+                }
                 if (handlers.onMessage) {
                     handlers.onMessage.forEach(handler => {
                         socket.addEventListener("message", (msg) => {
@@ -60,6 +67,13 @@ class WebsocketClient {
                 handler(symbol);
             });
         };
+        const onError = (handler) => {
+            handlers.onError = handlers.onError || [];
+            handlers.onError.push(handler);
+            return socket.addEventListener("error", (ev) => {
+                handler(ev);
+            });
+        };
         const onMessage = (handler) => {
             handlers.onMessage = handlers.onMessage || [];
             handlers.onMessage.push(handler);
@@ -67,10 +81,6 @@ class WebsocketClient {
                 const data = JSON.parse(msg.data);
                 handler(Object.assign({ symbol }, data));
             });
-        };
-        const removeMessageListener = (listener) => {
-            handlers.onMessage = ramda_1.without([listener], handlers.onMessage || []);
-            return socket.removeEventListener("message", listener);
         };
         const removeOpenListener = (listener) => {
             handlers.onOpen = ramda_1.without([listener], handlers.onOpen || []);
@@ -80,16 +90,30 @@ class WebsocketClient {
             handlers.onClose = ramda_1.without([listener], handlers.onClose || []);
             return socket.removeEventListener("close", listener);
         };
+        const removeErrorListener = (listener) => {
+            handlers.onError = ramda_1.without([listener], handlers.onError || []);
+            return socket.removeEventListener("error", listener);
+        };
+        const removeMessageListener = (listener) => {
+            handlers.onMessage = ramda_1.without([listener], handlers.onMessage || []);
+            return socket.removeEventListener("message", listener);
+        };
+        const removeAllMessageListeners = () => {
+            return socket.removeAllListeners("message");
+        };
         return {
             symbol,
             closeSocket,
             reconnectSocket,
             onOpen,
             onClose,
+            onError,
             onMessage,
             removeOpenListener,
             removeMessageListener,
+            removeAllMessageListeners,
             removeCloseListener,
+            removeErrorListener,
         };
     }
 }

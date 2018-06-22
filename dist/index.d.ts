@@ -6,7 +6,7 @@ export default class GeminiAPI {
     private key;
     private secret;
     private baseUrl;
-    constructor({key, secret, sandbox}: Params.Constructor);
+    constructor({ key, secret, sandbox }: Params.Constructor);
     requestPublic: (endpoint: string, params?: {}) => Promise<any>;
     requestPrivate: (endpoint: string, params?: {}) => Promise<any>;
     getAllSymbols: () => Promise<Market[]>;
